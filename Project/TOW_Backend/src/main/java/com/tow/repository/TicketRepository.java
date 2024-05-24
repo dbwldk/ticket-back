@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.tow.domain.TicketDB;
 
 @Repository
-public interface TicketRepository extends JpaRepository<TicketDB, Long> {
+public interface TicketRepository extends JpaRepository<TicketDB, Integer> {
 
 }
