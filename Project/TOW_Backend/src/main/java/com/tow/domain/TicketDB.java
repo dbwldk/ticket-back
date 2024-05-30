@@ -20,10 +20,10 @@ public class TicketDB {
 	private String event_name;
 	private Date registration_date;
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+	@JsonFormat(pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
 	private Timestamp ticket_open_date;
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+	@JsonFormat(pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
 	private Timestamp pre_sale_date;
 	private String image_url;
 	private String basic_info;
@@ -33,7 +33,12 @@ public class TicketDB {
 	private String genre;
 	private String sales_site;
 	private int view_count;
+	
+	@JsonFormat(pattern = "yyyy.MM.dd")
 	private Date event_start_date;
+	
+	@JsonFormat(pattern = "yyyy.MM.dd")
 	private Date event_end_date;
 	private String venue;
+	private String address;
 }
