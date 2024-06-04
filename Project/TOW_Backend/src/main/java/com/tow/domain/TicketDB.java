@@ -2,12 +2,13 @@ package com.tow.domain;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -29,9 +30,7 @@ public class TicketDB {
 	private String basic_info;
 	private String event_description;
 	private String agency_info;
-	private String detail_link;
 	private String genre;
-	private String sales_site;
 	private int view_count;
 	
 	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy.MM.dd", timezone="Asia/Seoul")
@@ -41,4 +40,8 @@ public class TicketDB {
 	private Date event_end_date;
 	private String venue;
 	private String address;
+	
+	//join
+	@OneToMany(mappedBy = "ticketDB")
+	private List<EventSiteDB> eventSites;
 }
