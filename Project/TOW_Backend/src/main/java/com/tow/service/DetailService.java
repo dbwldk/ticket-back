@@ -1,6 +1,5 @@
 package com.tow.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +9,11 @@ import com.tow.domain.TicketDB;
 import com.tow.repository.TicketRepository;
 
 @Service
-public class MainService {
+public class DetailService {
 	@Autowired
 	private TicketRepository ticketReq;
 	
-	public List<TicketDB> getAll() {
-		return ticketReq.findAll();
-	}
-	
-	public Optional<TicketDB> getOne(int id) {
-		return ticketReq.findById(id);
+	public Optional<TicketDB> getInfo(int id) {
+		return ticketReq.findTicketAndSites(id);
 	}
 }
