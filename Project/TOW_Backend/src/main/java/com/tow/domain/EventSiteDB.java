@@ -1,5 +1,7 @@
 package com.tow.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -21,5 +23,6 @@ public class EventSiteDB {
 	//join
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id" ,insertable=false, updatable=false)
+	@JsonIgnore
 	private TicketDB ticketDB;
 }
