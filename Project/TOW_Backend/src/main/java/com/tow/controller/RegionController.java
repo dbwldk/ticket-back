@@ -16,7 +16,7 @@ public class RegionController {
 	@Autowired
 	private RegionService regionService;
 	
-	@GetMapping("testt")
+	@GetMapping("region")
 	public List<TicketDB> getInfo(@RequestParam String keyword) {
 		return regionService.getTop6(keyword);
 	}
