@@ -1,6 +1,9 @@
 package com.tow.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.tow.domain.MainPostTicketDB;
@@ -27,8 +30,9 @@ public class MainPostServcie {
         return ticketReq.findTicketsForCurrentMonth(currentMonth, currentYear, limit);
     }
     
-    //모두 가져오기
-    public List<MainPostTicketDB> getAll() {
-        return ticketReq.findAll();
+    // 모두 가져오기 (무한스크롤)
+    public Page<MainPostTicketDB> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ticketReq.findAll(pageable);
     }
 }
