@@ -35,4 +35,13 @@ public class MainPostServcie {
         Pageable pageable = PageRequest.of(page, size);
         return ticketReq.findAll(pageable);
     }
+    
+    public List<MainPostTicketDB> getByGenre(String genre) {
+        return ticketReq.findByGenre(genre);
+    }
+    
+    
+    public List<MainPostTicketDB> getTop10ByGenre(String genre) {
+        return ticketReq.findTop10ByGenreLimit(genre);
+    }
 }
