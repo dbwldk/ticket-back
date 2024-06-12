@@ -35,4 +35,16 @@ public class MainPostController {
     public Page<MainPostTicketDB> getAllList(@RequestParam int page, @RequestParam int size) {
         return mainpostService.getAll(page, size);
     }
+    
+    // Top10
+    @GetMapping("/top10/{genre}")
+    public List<MainPostTicketDB> getTop10ByGenre(@PathVariable String genre) {
+        return mainpostService.getTop10ByGenre(genre);
+    }
+    
+    //genre별 가져오기
+    @GetMapping("/genre/{genre}")
+    public List<MainPostTicketDB> getByGenre(@PathVariable String genre) {
+        return mainpostService.getByGenre(genre);
+    }
 }

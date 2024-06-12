@@ -23,4 +23,10 @@ public interface MainPostRepositroy extends JpaRepository<MainPostTicketDB, Inte
 
     // 무한스크롤
     Page<MainPostTicketDB> findAll(Pageable pageable);
+    
+  
+    @Query("SELECT m FROM MainPostTicketDB m WHERE m.genre = :genre ORDER BY id DESC LIMIT 10")
+    List<MainPostTicketDB> findTop10ByGenreLimit(@Param("genre") String genre);
+    
+    List<MainPostTicketDB> findByGenre(String genre);
 }
