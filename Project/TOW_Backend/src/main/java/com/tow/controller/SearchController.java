@@ -2,17 +2,23 @@ package com.tow.controller;
 
 import java.sql.Date;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tow.domain.SearchTicketDB;
+import com.tow.domain.vo.SearchReqVO;
 import com.tow.service.SearchService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -20,39 +26,62 @@ public class SearchController {
 	@Autowired
 	private SearchService searchService;
 	
-	@GetMapping("testtt")
-	public List<SearchTicketDB> testtt() {
-		//지역
-		List<String> regionList = new ArrayList<>();
-		regionList.add("서울");
-		regionList.add("경기");
+	// 검색 필터 적용해서 Page 검색: not sort
+	@PostMapping("getSearchData")
+	public ResponseEntity<?> searchTickets(@RequestBody SearchReqVO searchReq) {
+		// 필터 데이터 : 리스트
+		List<String> genreList = searchReq.getGenreFilter();
+		List<String> regionList = searchReq.getRegionFilter();
+		if(genreList.size() == 0) { genreList = null; }
+		if(regionList.size() == 0) { regionList = null; }
 		
-		//검색어
-		String searchKey = "회";
+		// 필터 데이터 : 문자열, 숫자
+		String period = searchReq.getPeriod();
+		String searchKeyword = searchReq.getSearchKeyword();
+		int pageNum = searchReq.getPageNum();
 		
-		//기간
-		/*
-		String startDateString = "2024.05.04";
-		String endDateString = "2024.10.11";
+		if(searchKeyword.length() == 0) {
+			searchKeyword = null;
+		}
+		
+		// 기간
 		Date startDate = null;
 		Date endDate = null;
-		try {
-			startDate = searchService.convertStringToSqlDate(startDateString);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(period != "전체") {
+			String[] periodStr = period.split(" ~ ");
+			if(periodStr.length < 2) { // 단일 날짜
+				try {
+					startDate = searchService.convertStringToSqlDate(periodStr[0]);
+					endDate = searchService.convertStringToSqlDate(periodStr[0]);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					startDate = searchService.convertStringToSqlDate(periodStr[0]);
+					endDate = searchService.convertStringToSqlDate(periodStr[1]);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
-		try {
-			endDate = searchService.convertStringToSqlDate(endDateString);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
+		// Pageable
+		Pageable pageable = PageRequest.of(pageNum, 20);
 		
+		// 페이지 결과 받아오기
+		Page<SearchTicketDB> searchResults = searchService.findPageByFilters(regionList, genreList, startDate, endDate, searchKeyword, pageable);
 		
-		return searchService.testSearchResult(regionList, null, null, null, searchKey);
+		// 결과 반환
+		Map<String, Object> response = new HashMap<>();
+		response.put("content", searchResults.getContent());
+		response.put("totalElements", searchResults.getTotalElements());
+		response.put("totalPages", searchResults.getTotalPages());
+		
+		return ResponseEntity.ok(response);
 	}
+	
 	
 }
