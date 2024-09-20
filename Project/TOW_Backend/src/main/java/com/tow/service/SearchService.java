@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.tow.domain.SearchTicketDB;
@@ -22,8 +24,9 @@ public class SearchService {
 		return new java.sql.Date(parseDate.getTime());
 	}
 	
-	public List<SearchTicketDB> testSearchResult(List<String> regionList, List<String> genreList,
-			Date startDate, Date endDate, String searchKeyword) {
-		return sticketRep.findByFilters(regionList, genreList, startDate, endDate, searchKeyword);
+	public Page<SearchTicketDB> findPageByFilters(List<String> regionList, List<String> genreList,
+			Date startDate, Date endDate, String searchKeyword,
+			Pageable pageable) {
+		return sticketRep.findPageByFilters(regionList, genreList, startDate, endDate, searchKeyword, pageable);
 	}
 }
