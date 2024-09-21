@@ -1,5 +1,5 @@
 # database name = tow
-CREATE SCHEMA IF NOT EXISTS `TOW` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
+CREATE SCHEMA IF NOT EXISTS `TOW` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 USE TOW;
 
 #table > event_sites
@@ -11,7 +11,7 @@ CREATE TABLE `event_sites` (
   PRIMARY KEY (`id`),
   KEY `event_id` (`event_id`),
   CONSTRAINT `event_sites_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `tickets` (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ;
 
 #table > tickets
 CREATE TABLE `tickets` (
@@ -30,5 +30,6 @@ CREATE TABLE `tickets` (
   `event_end_date` date DEFAULT NULL,
   `venue` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
+  `region` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=902 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ;
