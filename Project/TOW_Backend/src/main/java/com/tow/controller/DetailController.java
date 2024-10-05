@@ -18,7 +18,8 @@ public class DetailController {
 	private DetailService detailService;
 	
 	@GetMapping("info")
-	public Optional<TicketDB> getInfo(@RequestParam int id) {
+	public Optional<TicketDB> getInfo(@RequestParam Integer id) {
+		detailService.incrementViewCnt(id);
 		return detailService.getInfo(id);
 	}
 	

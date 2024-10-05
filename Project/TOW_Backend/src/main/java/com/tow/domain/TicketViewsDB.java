@@ -16,10 +16,11 @@ import lombok.Data;
 public class TicketViewsDB {
 	@Id
 	private Integer id;
+	private Integer ticket_id;
 	private int view_cnt;
 	
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ticket_id", referencedColumnName = "id")
+	@JoinColumn(name = "ticket_id", referencedColumnName = "id", insertable=false, updatable=false)
 	@JsonIgnore
 	private TicketDB ticketDB;
 }
