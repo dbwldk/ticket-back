@@ -25,11 +25,31 @@ CREATE TABLE `tickets` (
   `event_description` text,
   `agency_info` text,
   `genre` varchar(50) DEFAULT NULL,
-  `view_count` int DEFAULT '0',
   `event_start_date` date DEFAULT NULL,
   `event_end_date` date DEFAULT NULL,
   `venue` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `region` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=902 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ;
+) ENGINE=InnoDB AUTO_INCREMENT=940 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+#table > ticket_views (조회수 분리)
+CREATE TABLE `ticket_views` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `view_cnt` int DEFAULT '0',
+  `ticket_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_ticket_views_id` (`ticket_id`),
+  CONSTRAINT `fk_ticket_views_id` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+#table > user
+CREATE TABLE `user` (
+  `id` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
