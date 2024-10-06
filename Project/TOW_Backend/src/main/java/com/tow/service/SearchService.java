@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,10 @@ public class SearchService {
 			Date startDate, Date endDate, String searchKeyword,
 			Pageable pageable) {
 		return sticketRep.findPageByFilters(regionList, genreList, startDate, endDate, searchKeyword, pageable);
+	}
+	
+	public List<SearchTicketDB> searchTop10BySerarchKey(String searchKeyword) {
+		Pageable topTen = PageRequest.of(0, 10); //top10
+		return sticketRep.findTop10BySearchKey(searchKeyword, topTen);
 	}
 }
