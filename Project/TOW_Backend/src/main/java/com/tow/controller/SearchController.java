@@ -17,8 +17,10 @@ import com.tow.domain.SearchTicketDB;
 import com.tow.domain.vo.SearchReqVO;
 import com.tow.service.SearchService;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -82,6 +84,13 @@ public class SearchController {
 		
 		return ResponseEntity.ok(response);
 	}
+	
+	// 자동 완성(검색어에 따라 상위 10개)
+	@GetMapping("autoComplete")
+	public List<SearchTicketDB> searchAutoComplete(@RequestParam String searchKey) {
+		return searchService.searchTop10BySerarchKey(searchKey);
+	}
+	
 	
 	
 }

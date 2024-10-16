@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -31,7 +32,6 @@ public class TicketDB {
 	private String event_description;
 	private String agency_info;
 	private String genre;
-	private int view_count;
 	
 	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy.MM.dd", timezone="Asia/Seoul")
 	private Date event_start_date;
@@ -41,7 +41,11 @@ public class TicketDB {
 	private String venue;
 	private String address;
 	
-	//join
+	//join enventSites
 	@OneToMany(mappedBy = "ticketDB")
 	private List<EventSiteDB> eventSites;
+	
+	//join ticket_views
+	@OneToOne(mappedBy = "ticketDB")
+	private TicketViewsDB ticketViews;
 }

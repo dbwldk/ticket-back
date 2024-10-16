@@ -13,7 +13,7 @@ import com.tow.domain.TicketDB;
 
 @Repository
 public interface TicketRepository extends JpaRepository<TicketDB, Integer> {
-	@Query("SELECT t FROM TicketDB t LEFT JOIN FETCH t.eventSites e WHERE t.id = :ticketId")
+	@Query("SELECT t FROM TicketDB t WHERE t.id = :ticketId")
 	Optional<TicketDB> findTicketAndSites(@Param("ticketId") Integer ticketId);
 	
 	@Query("SELECT t FROM TicketDB t WHERE " +
