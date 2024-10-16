@@ -26,4 +26,9 @@ public interface SearchTicketRepository extends JpaRepository<SearchTicketDB, In
             @Param("endDate") Date endDate,
             @Param("searchKeyword") String searchKeyword,
             Pageable pageable);
+	
+	@Query("SELECT s FROM SearchTicketDB s JOIN s.ticketViews v "
+			+ "WHERE (:searchKeyword IS NULL OR s.event_name LIKE %:searchKeyword%) "
+			+ "ORDER BY v.view_cnt DESC")
+	List<SearchTicketDB> findTop10BySearchKey(@Param("searchKeyword") String searchKeyword, Pageable pageable);
 }
