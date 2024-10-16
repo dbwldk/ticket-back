@@ -37,7 +37,7 @@ public class NaverController {
         String authorizationUrl = naverService.getAuthorizationUrl();
         return ResponseEntity.ok(authorizationUrl);
     }
-
+    //밈줌바보
     /**
      * 네이버 로그인 후 콜백을 처리하는 엔드포인트
      * 인증 코드를 받아 사용자 정보를 조회합니다.
