@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tow.domain.vo.NaverUserVO;
 import com.tow.service.NaverService;
 
-import jakarta.servlet.http.Cookie; // 변경된 import
-import jakarta.servlet.http.HttpServletResponse; // 변경된 import
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -22,9 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NaverController {
 
-    /**
-     * 네이버 로그인 관련 비즈니스 로직을 처리하는 서비스
-     */
     private final NaverService naverService;
 
     /**
