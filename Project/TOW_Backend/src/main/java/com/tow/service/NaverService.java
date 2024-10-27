@@ -24,29 +24,23 @@ import org.springframework.web.client.RestTemplate;
 import com.tow.domain.NaverUserDB;
 import com.tow.domain.vo.NaverTokenVo;
 import com.tow.domain.vo.NaverUserVO;
-import com.tow.repository.UserRepository;
+import com.tow.repository.NaverUserRepository;
 
 @Service
 public class NaverService {
 	
 	@Autowired
-    private UserRepository userRepository;
+    private NaverUserRepository naverUserRepository;
 
-    /**
-     * 네이버 개발자 센터에서 발급받은 클라이언트 ID
-     */
+    //네이버 개발자 센터에서 발급받은 클라이언트 ID
     @Value("${naver.client.id}")
     private String clientId;
-
-    /**
-     * 네이버 개발자 센터에서 발급받은 클라이언트 시크릿
-     */
+    
+    //네이버 개발자 센터에서 발급받은 클라이언트 시크릿
     @Value("${naver.client.secret}")
     private String clientSecret;
 
-    /**
-     * 네이버 로그인 후 리다이렉트될 URL
-     */
+    //네이버 로그인 후 리다이렉트될 URL
     @Value("${naver.redirect.uri}")
     private String redirectUri;
 
@@ -89,11 +83,15 @@ public class NaverService {
             NaverUserVO.Response userInfo = getUserInfo(tokenVo.getAccess_token());
             
             // DB에서 사용자 정보 조회
-            Optional<NaverUserDB> existingUser = userRepository.findById(userInfo.getId());
+            Optional<NaverUserDB> existingUser = naverUserRepository.findByEmail(userInfo.getEmail());
+            System.out.println("조회된 사용자: " + existingUser);
             if (existingUser.isPresent()) {
+
+            	System.out.println("저장저장111");
                 return userInfo; // 사용자 정보를 반환
             } else {
                 // 사용자 존재하지 않음: 로그인 데이터 저장
+            	System.out.println("저장저장222");
                 saveUserInfo(userInfo);
                 return userInfo; // 사용자 정보를 반환
             }
@@ -172,14 +170,12 @@ public class NaverService {
     
     public void saveUserInfo(NaverUserVO.Response userInfo) {
         NaverUserDB naverUser = new NaverUserDB();
-        naverUser.setId(userInfo.getId());
+        naverUser.setNaver_token(userInfo.getId());
         naverUser.setName(userInfo.getName());
         naverUser.setEmail(userInfo.getEmail());
         naverUser.setGender(userInfo.getGender());
         naverUser.setAge(userInfo.getAge());
-        
-        System.out.println("네이버유저" + naverUser);
 
-        userRepository.save(naverUser); // 데이터베이스에 저장
+        naverUserRepository.save(naverUser); // 데이터베이스에 저장
     }
 }

@@ -11,9 +11,10 @@ import lombok.Data;
 public class NaverUserDB {
     
     @Id
-    private String id; // 기본 키
-    private String name; // 이름
-    private String email; // 이메일
-    private String gender; // 성별
+    private String email;
+    private String name;
+    private String naver_token;
+    private String gender;
     private String age;
+    private String password;
 }

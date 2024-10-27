@@ -15,10 +15,10 @@ public class NaverUserVO {
     @Data
     @Entity
     public static class Response {
-    	@Id
-        private String id;
-        private String name;
+        @Id
         private String email;
+        private String name;
+        private String id;
         private String gender;
         private String age;
     }
