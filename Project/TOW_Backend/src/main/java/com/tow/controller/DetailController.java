@@ -26,16 +26,19 @@ public class DetailController {
 		return detailService.getInfo(id);
 	}
 	
+	
+	/* 좋아요 버튼 */
 	// 좋아요 버튼 클릭
 	@GetMapping("clickLike")
 	public void clickLike(@RequestParam Integer tId, @RequestParam String uId) {
 		detailService.saveTicketLike(tId, uId);
 	}
 	
-	// 좋아요 버튼 해제
+	// 좋아요 버튼 해제: 알림도 같이 삭제
 	@GetMapping("cancelLike")
 	public void cancelLike(@RequestParam Integer tId, @RequestParam String uId) {
-		detailService.deleteTicketLike(tId, uId);
+		detailService.deleteTicketLike(tId, uId); //좋아요
+		detailService.deleteTicketBell(tId, uId); //알림
 	}
 	
 	// 좋아요 상태
@@ -56,5 +59,30 @@ public class DetailController {
 		return detailService.getPerForAge(tId);
 	}
 	
+	
+	/* 알림 버튼 */
+	// 알림 버튼 클릭
+ 	@GetMapping("clickBell")
+ 	public void clickBell(@RequestParam Integer tId, @RequestParam String uId, @RequestParam Integer bellTime) {
+ 		detailService.saveTicketBell(tId, uId, bellTime);
+ 	}
+ 	
+ 	// 알림 버튼 해제
+ 	@GetMapping("cancelBell")
+ 	public void cancelBell(@RequestParam Integer tId, @RequestParam String uId) {
+ 		detailService.deleteTicketBell(tId, uId);
+ 	}
+ 	
+ 	// 알림 상태
+ 	@GetMapping("bellCheck")
+ 	public boolean bellCheck(@RequestParam Integer tId, @RequestParam String uId) {
+ 		return detailService.bellStateCk(tId, uId);
+ 	}
+ 	
+ 	// 알림 수 가져오기
+ 	@GetMapping("ticketBell")
+ 	public long getTicketBell(@RequestParam Integer tId) {
+ 		return detailService.getCntBell(tId);
+ 	}
 	
 }

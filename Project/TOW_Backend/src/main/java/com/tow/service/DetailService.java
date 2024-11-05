@@ -1,5 +1,8 @@
 package com.tow.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,24 +11,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tow.domain.LikeDB;
+import com.tow.domain.ReservationDB;
 import com.tow.domain.TicketDB;
 import com.tow.domain.vo.TicketLikeVO;
 import com.tow.repository.LikeRepository;
+import com.tow.repository.ReservationRepository;
 import com.tow.repository.TicketRepository;
 import com.tow.repository.TicketViewsRepository;
 
 @Service
 public class DetailService {
 	@Autowired
-	private TicketRepository ticketReq;
+	private TicketRepository ticketRep;
 	@Autowired
 	private TicketViewsRepository ticketViewRep;
 	@Autowired
 	private LikeRepository likeRep;
+	@Autowired
+    private ReservationRepository reservationRepository;
 	
 	//티켓 상세 정보 조회
 	public Optional<TicketDB> getInfo(int id) {
-		return ticketReq.findTicketAndSites(id);
+		return ticketRep.findTicketAndSites(id);
 	}
 	
 	//조회수 증가
@@ -34,6 +41,7 @@ public class DetailService {
 		ticketViewRep.incrementViewsByTicketId(ticketId);
 	}
 	
+	/* 좋아요 버튼 */
 	// 좋아요 클릭
 	public void saveTicketLike(Integer ticketId, String uId) {
 		LikeDB ticketLike = new LikeDB();
@@ -94,4 +102,55 @@ public class DetailService {
 		
 		return tkLike;
 	}
+	
+	
+	/* 알림 버튼 */
+    // Timestamp에서 LocalDateTime으로 변환하는 메서드
+    public LocalDateTime convertTicketTime(Timestamp ticket_open_date) {
+        if (ticket_open_date != null) {
+            return ticket_open_date.toInstant()
+                                  .atZone(ZoneId.of("Asia/Seoul"))
+                                  .toLocalDateTime();
+        } else {
+        	return null;
+        }
+    }
+    
+    // 알림 버튼 클릭
+ 	public void saveTicketBell(Integer ticketId, String uId, Integer bellTime) {
+ 		// 티켓의 오픈 시간 받아오기
+ 		LocalDateTime tk_open = convertTicketTime(ticketRep.findTicketOpenDateById(ticketId));
+ 		
+ 		// 티켓 오픈 시간이 있다면 저장
+ 		if(tk_open != null) {
+ 			ReservationDB ticketReservation = new ReservationDB();
+ 	 		ticketReservation.setTicketId(ticketId);
+ 	 		ticketReservation.setEmail(uId);
+ 	 		ticketReservation.setNotificationHours(bellTime);
+ 	 		ticketReservation.setTicketOpenDate(tk_open);
+ 	 		reservationRepository.save(ticketReservation);
+ 		}
+ 	}
+ 	
+ 	// 알림 해제
+ 	@Transactional
+ 	public void deleteTicketBell(Integer ticketId, String uId) {
+ 		reservationRepository.deleteByTicketIdAndEmail(ticketId, uId);
+ 	}
+ 	
+ 	// 알림 상태 확인
+ 	public boolean bellStateCk(Integer ticketId, String uId) {
+ 		long state = reservationRepository.countByTidAndUid(ticketId, uId);
+ 		if(state > 0) { //존재
+ 			return true;
+ 		} else {
+ 			return false;
+ 		}
+ 	}
+ 	
+ 	// 좋아요 수 가져오기
+ 	public long getCntBell(Integer ticketId) {
+ 		return reservationRepository.countByTid(ticketId);
+ 	}
+	
 }
