@@ -14,13 +14,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
 @Entity
-@Table(name = "reservation")
+@Table(name = "ticket_reservation")
 public class ReservationDB {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String email;
+    
+    @Column(name = "ticket_id") //티켓 아이디
+    private Integer ticketId;
 
     @Column(name = "ticket_open_date")
     private LocalDateTime ticketOpenDate;  // 티켓 날짜

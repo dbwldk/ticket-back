@@ -1,5 +1,6 @@
 package com.tow.repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,9 @@ import com.tow.domain.TicketDB;
 public interface TicketRepository extends JpaRepository<TicketDB, Integer> {
 	@Query("SELECT t FROM TicketDB t WHERE t.id = :ticketId")
 	Optional<TicketDB> findTicketAndSites(@Param("ticketId") Integer ticketId);
+	
+	@Query("SELECT t.ticket_open_date FROM TicketDB t WHERE t.id = :ticketId")
+	Timestamp findTicketOpenDateById(@Param("ticketId") Integer ticketId);
 	
 	@Query("SELECT t FROM TicketDB t WHERE " +
 			"t.address LIKE :keyword%")
