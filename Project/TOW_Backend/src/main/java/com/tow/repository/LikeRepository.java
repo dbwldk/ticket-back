@@ -24,7 +24,14 @@ public interface LikeRepository extends JpaRepository<LikeDB, Integer> {
 	// 특정 ticketId와 userId 조건에 맞는 엔티티 삭제
 	void deleteByTicketIdAndUserId(Integer ticketId, String userId);
 	
-	// 사용자의 좋아요 상태 확인하기
+	// 사용자의 좋아요 상태 확인하기(상세 페이지)
 	@Query("SELECT COUNT(l) FROM LikeDB l WHERE l.ticketId = :tId AND l.userId = :uId")
 	long countByTidAndUid(@Param("tId") Integer tId, @Param("uId") String uId);
+	
+	// 사용자가 좋아요 누른 모든 티켓 가져오기
+	List<LikeDB> findByUserIdOrderByLikeTimeDesc(@Param("userId") String userId);
+	
+	// 사용자가 좋아요 누른 티켓 수 가져오기
+	@Query("SELECT COUNT(l) FROM LikeDB l WHERE l.userId = :userId")
+	long countByUserId(@Param("userId") String userId);
 }
