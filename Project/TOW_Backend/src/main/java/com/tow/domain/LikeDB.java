@@ -1,5 +1,7 @@
 package com.tow.domain;
 
+import java.sql.Timestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +26,15 @@ public class LikeDB {
 	@Column(name = "u_id")
 	private String userId;
 	
+	@Column(name = "time", insertable = false, updatable = false)
+	private Timestamp likeTime;
+	
 	@ManyToOne
 	@JoinColumn(name = "u_id", referencedColumnName = "email", insertable = false, updatable = false)
 	private NaverUserDB naverUser;
+	
+	@ManyToOne
+	@JoinColumn(name = "ticket_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private TicketDB ticketDB;
+	
 }
