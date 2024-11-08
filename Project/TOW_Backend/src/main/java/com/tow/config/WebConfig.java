@@ -12,7 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
 		registry
 			.addMapping("/**")
 			.allowedOrigins("http://localhost:3000")
-			.allowedMethods("*")
-			.allowedHeaders("*");
+			.allowedMethods("GET", "POST", "PUT", "DELETE")
+			.allowedHeaders("*")
+			.allowCredentials(true); // 인증 쿠키 전달 허용
 	}
 }

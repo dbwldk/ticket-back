@@ -1,15 +1,21 @@
 package com.tow.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tow.domain.NaverUserDB;
 import com.tow.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -24,22 +30,58 @@ public class UserController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<NaverUserDB> login(@RequestBody NaverUserDB user, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody NaverUserDB user, HttpSession session) {
         boolean isAuthenticated = userService.authenticateUser(user.getEmail(), user.getPassword());
         if (isAuthenticated) {
-            // 세션에 사용자 정보를 저장
-            session.setAttribute("user", user);
-            return ResponseEntity.ok(user); // NaverUserDB 객체를 반환
+            // 세션에 사용자 정보를 저장: email만(session이 노출되므로, 나머지 정보는 노출 안되도록(email을 key로 db에 접근해서 받아오면 됨)
+            session.setAttribute("user", user.getEmail());
+            
+            // 응답 생성
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", session.getAttribute("user"));
+            //System.out.println(session.getAttribute("user"));
+            return ResponseEntity.ok(response); // 세션값을 반환
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // 인증 실패
         }
     }
     
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
+    public ResponseEntity<String> logout(HttpSession session, HttpServletResponse response) {
         session.invalidate(); // 세션 무효화
+
+        // 캐시 방지를 위해 응답 헤더 설정
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setDateHeader("Expires", 0); // Proxies
+
+        System.out.println("logout");
         return ResponseEntity.ok("로그아웃 성공");
     }
+    
+    // 세션 체크
+    @GetMapping("/checkLoginSession")
+    public ResponseEntity<Map<String, Object>> checkSession(HttpSession session) {
+    	Map<String, Object> response = new HashMap<>();
+        Object userSession = session.getAttribute("user"); //email
+
+        if (userSession != null) {
+            response.put("isLoggedIn", true);
+            response.put("user", userSession);
+        } else {
+            response.put("isLoggedIn", false);
+        }
+        
+
+        return ResponseEntity.ok(response);
+    }
+    
+    // 로그인 타입(네이버, 자체 로그인) 받아오기
+    @GetMapping("/checkLoginType")
+    public String checkLoginType(@RequestParam String email) {
+    	return userService.checkLoginType(email);
+    }
+    
 }
 
 //package com.tow.controller;
