@@ -27,6 +27,16 @@ public class UserService {
         return false; // 사용자 없음
     }
     
+    // 네이버 로그인이면 "naver", 자체 로그인이면 "normal" 반환
+    public String checkLoginType(String email) {
+    	boolean IsNaverLogin = userRepository.IsNaverLoginFindByEmail(email); //naver면 true 반환
+    	if(IsNaverLogin) {
+    		return "naver";
+    	} else {
+    		return "normal";
+    	}
+    }
+    
 //    // 사용자 인증 및 비밀번호 변경 로직
 //    public boolean updatePassword(String email, String currentPassword, String newPassword) {
 //        // 사용자 인증 로직
