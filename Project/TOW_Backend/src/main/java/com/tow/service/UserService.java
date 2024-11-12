@@ -37,6 +37,18 @@ public class UserService {
     	}
     }
     
+    // 비밀번호 변경
+    public boolean updatePassword(String email, String newPassword) {
+        Optional<NaverUserDB> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            NaverUserDB user = userOptional.get();
+            user.setPassword(newPassword); // 비밀번호 업데이트
+            userRepository.save(user); // 변경 사항 저장
+            return true;
+        }
+        return false; // 사용자 없음
+    }
+    
 //    // 사용자 인증 및 비밀번호 변경 로직
 //    public boolean updatePassword(String email, String currentPassword, String newPassword) {
 //        // 사용자 인증 로직
