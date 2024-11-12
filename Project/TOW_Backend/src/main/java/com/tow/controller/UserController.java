@@ -59,6 +59,25 @@ public class UserController {
         return ResponseEntity.ok("로그아웃 성공");
     }
     
+    // 비밀번호 변경 엔드포인트
+    @PostMapping("/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email"); // 요청 본문에서 이메일 가져오기
+        String newPassword = payload.get("newPassword"); // 요청 본문에서 새 비밀번호 가져오기
+
+        // 비밀번호 변경 요청 처리
+        boolean isUpdated = userService.updatePassword(email, newPassword);
+        Map<String, String> response = new HashMap<>();
+
+        if (isUpdated) {
+            response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+            return ResponseEntity.ok(response); // 성공 응답
+        } else {
+            response.put("message", "사용자를 찾을 수 없습니다."); // 사용자 없음
+            return ResponseEntity.status(404).body(response); // 사용자 없음 응답
+        }
+    }
+    
     // 세션 체크
     @GetMapping("/checkLoginSession")
     public ResponseEntity<Map<String, Object>> checkSession(HttpSession session) {
