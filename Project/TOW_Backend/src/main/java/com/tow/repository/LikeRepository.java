@@ -3,6 +3,8 @@ package com.tow.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,8 +30,11 @@ public interface LikeRepository extends JpaRepository<LikeDB, Integer> {
 	@Query("SELECT COUNT(l) FROM LikeDB l WHERE l.ticketId = :tId AND l.userId = :uId")
 	long countByTidAndUid(@Param("tId") Integer tId, @Param("uId") String uId);
 	
-	// 사용자가 좋아요 누른 모든 티켓 가져오기
+	// 사용자가 좋아요 누른 모든 티켓 가져오기: list
 	List<LikeDB> findByUserIdOrderByLikeTimeDesc(@Param("userId") String userId);
+	
+	// 사용자가 좋아요 누른 모든 티켓 가져오기: page
+	Page<LikeDB> findByUserIdOrderByLikeTimeDesc(@Param("userId") String userId, Pageable pageable);
 	
 	// 사용자가 좋아요 누른 티켓 수 가져오기
 	@Query("SELECT COUNT(l) FROM LikeDB l WHERE l.userId = :userId")
