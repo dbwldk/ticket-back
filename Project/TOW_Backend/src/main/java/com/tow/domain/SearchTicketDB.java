@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -34,6 +36,9 @@ public class SearchTicketDB {
     //join ticket_views
   	@OneToOne(mappedBy = "ticketDB")
   	private TicketViewsDB ticketViews;
-    
+  	
+  	@OneToMany(mappedBy = "ticketDB", fetch = FetchType.EAGER)
+  	@JsonIgnore
+    private List<LikeDB> likes;
     
 }
