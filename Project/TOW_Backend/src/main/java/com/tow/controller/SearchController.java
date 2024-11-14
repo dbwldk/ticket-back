@@ -34,12 +34,15 @@ public class SearchController {
 		// 필터 데이터 : 리스트
 		List<String> genreList = searchReq.getGenreFilter();
 		List<String> regionList = searchReq.getRegionFilter();
+		List<String> siteList = searchReq.getSiteFilter();
 		if(genreList.size() == 0) { genreList = null; }
 		if(regionList.size() == 0) { regionList = null; }
+		if(siteList.size() == 0) { siteList = null; }
 		
 		// 필터 데이터 : 문자열, 숫자
 		String period = searchReq.getPeriod();
 		String searchKeyword = searchReq.getSearchKeyword();
+		String orderByKey = searchReq.getOrderByKey();
 		int pageNum = searchReq.getPageNum();
 		
 		if(searchKeyword.length() == 0) {
@@ -49,7 +52,7 @@ public class SearchController {
 		// 기간
 		Date startDate = null;
 		Date endDate = null;
-		if(period != "전체") {
+		if(!"전체".equals(period)) {
 			String[] periodStr = period.split(" ~ ");
 			if(periodStr.length < 2) { // 단일 날짜
 				try {
@@ -74,7 +77,17 @@ public class SearchController {
 		Pageable pageable = PageRequest.of(pageNum, 20);
 		
 		// 페이지 결과 받아오기
-		Page<SearchTicketDB> searchResults = searchService.findPageByFilters(regionList, genreList, startDate, endDate, searchKeyword, pageable);
+		Page<SearchTicketDB> searchResults = null;
+		if ("popular".equals(orderByKey)) {
+		    // 관심순
+		    searchResults = searchService.findPageByFiltersOrderByLikes(regionList, genreList, siteList, startDate, endDate, searchKeyword, pageable);
+		} else if ("view".equals(orderByKey)) {
+		    // 조회순
+		    searchResults = searchService.findPageByFiltersOrderByViews(regionList, genreList, siteList, startDate, endDate, searchKeyword, pageable);
+		} else {
+		    // 가나다순
+		    searchResults = searchService.findPageByFiltersOrderByTitle(regionList, genreList, siteList, startDate, endDate, searchKeyword, pageable);
+		}
 		
 		// 결과 반환
 		Map<String, Object> response = new HashMap<>();
@@ -84,6 +97,7 @@ public class SearchController {
 		
 		return ResponseEntity.ok(response);
 	}
+	
 	
 	// 자동 완성(검색어에 따라 상위 10개)
 	@GetMapping("autoComplete")
