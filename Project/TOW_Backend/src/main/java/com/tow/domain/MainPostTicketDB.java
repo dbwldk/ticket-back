@@ -1,5 +1,6 @@
 package com.tow.domain;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class MainPostTicketDB {
     private String event_name;
     private Timestamp ticket_open_date;
     private Timestamp pre_sale_date;
+    private Date event_start_date;
+    private Date event_end_date;
     private String image_url;
     private String genre;
     
