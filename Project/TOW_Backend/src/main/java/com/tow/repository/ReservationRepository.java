@@ -24,15 +24,15 @@ public interface ReservationRepository extends JpaRepository<ReservationDB, Inte
 	long countByTidAndUid(@Param("tId") Integer tId, @Param("uId") String uId);
 	
 	// 사용자가 알림 누른 모든 티켓 가져오기: list
-	@Query("SELECT r FROM ReservationDB r WHERE r.email = :email AND r.emailSent = false ORDER BY r.reservationTime DESC")
+	@Query("SELECT r FROM ReservationDB r WHERE r.email = :email ORDER BY r.reservationTime DESC")
 	List<ReservationDB> findByEmailOrderByReservationTimeDesc(@Param("email") String email);
 	
 	// 사용자가 알림 누른 모든 티켓 가져오기: page
-	@Query("SELECT r FROM ReservationDB r WHERE r.email = :email AND r.emailSent = false ORDER BY r.reservationTime DESC")
+	@Query("SELECT r FROM ReservationDB r WHERE r.email = :email ORDER BY r.reservationTime DESC")
 	Page<ReservationDB> findByEmailOrderByReservationTimeDesc(@Param("email") String email, Pageable pageable);
 	
 	// 사용자가 알림 누른 티켓 수 가져오기
-	@Query("SELECT COUNT(r) FROM ReservationDB r WHERE r.email = :userId AND r.emailSent = false")
+	@Query("SELECT COUNT(r) FROM ReservationDB r WHERE r.email = :userId")
 	long countByUserId(@Param("userId") String userId);
 	
 	// 티켓 알림 시간 가져오기
