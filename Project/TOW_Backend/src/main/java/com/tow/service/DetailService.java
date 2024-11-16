@@ -87,7 +87,7 @@ public class DetailService {
 		
 		for(int i = 0 ; i < ageArr.length; i++){
 			long totalCnt = likeRep.countByTidAndAge(ticketId, ageArr[i]);
-			agePerArr[i] = ((double) totalCnt / totalLikeCnt) * 100;
+			agePerArr[i] = Math.round(((double) totalCnt / totalLikeCnt) * 1000) / 10.0; // 소수 첫째 자리까지만 나오도록
 			System.out.println(i + " : " + totalCnt);
 			System.out.println(agePerArr[i]);
         }
