@@ -173,7 +173,6 @@ public class NaverService {
         naverUser.setNaver_token(userInfo.getId());
         naverUser.setName(userInfo.getName());
         naverUser.setEmail(userInfo.getEmail());
-        naverUser.setGender(userInfo.getGender());
         naverUser.setAge(userInfo.getAge());
 
         naverUserRepository.save(naverUser); // 데이터베이스에 저장

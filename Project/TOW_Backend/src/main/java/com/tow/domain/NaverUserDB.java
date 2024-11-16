@@ -14,7 +14,6 @@ public class NaverUserDB {
     private String email;
     private String name;
     private String naver_token;
-    private String gender;
     private String age;
     private String password;
 }
