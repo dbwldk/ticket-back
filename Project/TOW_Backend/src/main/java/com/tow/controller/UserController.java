@@ -101,6 +101,13 @@ public class UserController {
     	return userService.checkLoginType(email);
     }
     
+    // 로그인 한 사용자 이름 받아오기
+    @GetMapping("/getNameWhoLogin")
+    public String getNameWhoLogin(@RequestParam String email) {
+    	return userService.getNameWhoLogin(email);
+    }
+    
+    
 }
 
 //package com.tow.controller;

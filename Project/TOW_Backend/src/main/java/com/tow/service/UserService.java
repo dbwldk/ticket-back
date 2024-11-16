@@ -37,6 +37,11 @@ public class UserService {
     	}
     }
     
+    // 로그인 한 사용자 이름 받아오기
+    public String getNameWhoLogin(String email) {
+    	return userRepository.findNameByEmail(email);
+    }
+    
     // 비밀번호 변경
     public boolean updatePassword(String email, String newPassword) {
         Optional<NaverUserDB> userOptional = userRepository.findByEmail(email);
