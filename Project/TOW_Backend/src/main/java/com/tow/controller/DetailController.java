@@ -84,5 +84,11 @@ public class DetailController {
  	public long getTicketBell(@RequestParam Integer tId) {
  		return detailService.getCntBell(tId);
  	}
+ 	
+ 	/* 상세 페이지 top5 */
+ 	@GetMapping("detailTop5")
+ 	public List<TicketDB> getTop5TicketFromDetail(@RequestParam Integer tId) {
+ 		return detailService.getTop5LikedTicketsByTicketIdList(tId);
+ 	}
 	
 }

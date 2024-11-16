@@ -39,4 +39,23 @@ public interface LikeRepository extends JpaRepository<LikeDB, Integer> {
 	// 사용자가 좋아요 누른 티켓 수 가져오기
 	@Query("SELECT COUNT(l) FROM LikeDB l WHERE l.userId = :userId")
 	long countByUserId(@Param("userId") String userId);
+	
+	/* 상세 페이지 top5 */
+	// 좋아요를 누른 모든 유저 ID 조회
+	@Query("SELECT l.userId FROM LikeDB l WHERE l.ticketId = :ticketId")
+	List<String> findUserIdByTicketId(@Param("ticketId") Integer ticketId);
+	
+	// 가장 많이 좋아요한 티켓 5 목록 가져오기: 장르가 같은 항목으로
+	@Query("SELECT l.ticketId, COUNT(l.userId) as likeCount " +
+	           "FROM LikeDB l INNER JOIN l.ticketDB tl " +
+	           "WHERE l.userId IN :userIdList AND l.ticketId != :excludedTicketId " +
+	           "AND (:excludedTicketGenre IS NULL OR tl.genre = :excludedTicketGenre) " +
+	           "GROUP BY l.ticketId " +
+	           "ORDER BY likeCount DESC " +
+	           "LIMIT 5")
+	List<Object[]> findTop5LikedTicketsByUserIds(@Param("userIdList") List<String> userIdList,
+            @Param("excludedTicketId") Integer excludedTicketId,
+            @Param("excludedTicketGenre") String excludedTicketGenre);
+	
+	
 }
