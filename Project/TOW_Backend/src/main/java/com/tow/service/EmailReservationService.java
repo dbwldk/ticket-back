@@ -12,6 +12,7 @@ import com.tow.domain.ReservationDB;
 import com.tow.repository.ReservationRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -28,6 +29,7 @@ public class EmailReservationService {
     @Scheduled(fixedRate = 60000) // 1분마다 실행
     public void sendScheduledEmails() {
         LocalDateTime now = LocalDateTime.now();
+        System.out.println("Checking for reservations at: " + now); // 로그 추가
         List<ReservationDB> reservations = reservationRepository.findAll();
 
         for (ReservationDB reservation : reservations) {
@@ -41,27 +43,35 @@ public class EmailReservationService {
 
     // 예약 알림 이메일 전송
     public void sendReservationEmail(ReservationDB reservation, LocalDateTime now) {
-    	// 티켓 오픈 날짜
-    	LocalDateTime ticketOpenDate = reservation.getTicketOpenDate();
-    	// 알림 시간을 고려한 발송 시간
-    	LocalDateTime notifyTime = ticketOpenDate.minusHours(reservation.getNotificationHours());
+        // 티켓 오픈 날짜
+        LocalDateTime ticketOpenDate = reservation.getTicketOpenDate();
+        // 알림 시간을 고려한 발송 시간
+        LocalDateTime notifyTime = ticketOpenDate.minusHours(reservation.getNotificationHours());
 
-    	// 현재 시간이 notifyTime과 같거나 이후일 경우 이메일 발송
-    	if (now.isAfter(notifyTime) && !reservation.isEmailSent()) { // 이메일이 발송되지 않은 경우
-    	    sendEmail(reservation.getEmail(), ticketOpenDate);
-    	    reservation.setEmailSent(true); // 이메일 발송 상태 업데이트
-    	    reservationRepository.save(reservation); // 변경된 상태 저장
-    	    System.out.println("이메일 발송: " + reservation.getEmail());
-    	} else {
-    	    System.out.println("조건 불충족: notifyTime=" + notifyTime + ", 현재시간=" + now + ", ticketOpenDate=" + ticketOpenDate);
-    	}
+        // 현재 시간이 notifyTime과 같거나 이후일 경우 이메일 발송
+        if (now.isAfter(notifyTime) && !reservation.isEmailSent()) { // 이메일이 발송되지 않은 경우
+            // 티켓 이름 가져오기
+            String eventName = reservation.getTicketDB().getEvent_name(); // TicketDB에서 event_name 가져오기
+            Integer ticketId = reservation.getTicketId(); // ticket_id 가져오기
+            
+            // 이메일 발송
+            sendEmail(reservation.getEmail(), ticketOpenDate, eventName, ticketId);
+            reservation.setEmailSent(true); // 이메일 발송 상태 업데이트
+            reservationRepository.save(reservation); // 변경된 상태 저장
+            System.out.println("이메일 발송: " + reservation.getEmail());
+        } else {
+            System.out.println("조건 불충족: notifyTime=" + notifyTime + ", 현재시간=" + now + ", ticketOpenDate=" + ticketOpenDate);
+        }
     }
-
-    private void sendEmail(String to, LocalDateTime ticketOpenDate) {
+    private void sendEmail(String to, LocalDateTime ticketOpenDate, String eventName, Integer ticketId) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject("예약 알림");
-        message.setText("티켓 날짜: " + ticketOpenDate);
+        message.setSubject("Ticket Open Wave " + eventName + " 오픈 티켓 예약 알림");
+        
+        // 날짜 형식 지정
+        String formattedDate = ticketOpenDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        String ticketLink = "https://towave.site/detail/" + ticketId; // 링크 생성
+        message.setText("티켓 이름: " + eventName + "\n오픈 티켓 날짜: " + formattedDate + "\n토우 티켓 링크: " + ticketLink);
 
         try {
             System.out.println("Sending email to: " + to); // 로그 추가
@@ -75,11 +85,5 @@ public class EmailReservationService {
             System.err.println("Unexpected error: " + e.getMessage());
         }
     }
+
 }
-
-//  public ReservationDB createReservation(ReservationDB reservation) {
-//      ReservationDB savedReservation = reservationRepository.save(reservation);
-//      sendEmail(savedReservation.getEmail(), savedReservation.getTicketOpenDate()); // 즉시 이메일 발송
-//      return savedReservation;
-//  }
-

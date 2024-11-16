@@ -36,14 +36,14 @@ public class ReservationDB {
     private boolean emailSent; // 이메일 발송 상태
     
     @Column(name = "created_at", insertable = false, updatable = false)
-	private Timestamp reservationTime;
+   private Timestamp reservationTime;
     
     //
     @ManyToOne
-	@JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
-	private NaverUserDB naverUser;
-	
-	@ManyToOne
-	@JoinColumn(name = "ticket_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private TicketDB ticketDB;
+    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
+    private NaverUserDB naverUser;
+    
+    @ManyToOne
+    @JoinColumn(name = "ticket_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private TicketDB ticketDB;
 }
