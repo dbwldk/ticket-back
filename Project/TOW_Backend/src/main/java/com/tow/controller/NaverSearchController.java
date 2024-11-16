@@ -78,7 +78,7 @@ public class NaverSearchController {
 			e.printStackTrace();
 		}
 		
-        return resultVO != null ? resultVO.getItems() : null;
+        return resultVO != null ? (resultVO.getItems().size() == 0 ? null : resultVO.getItems()) : null;
 	}
 	
 	// 주소 검색 naver map
