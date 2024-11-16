@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -152,5 +153,43 @@ public class DetailService {
  	public long getCntBell(Integer ticketId) {
  		return reservationRepository.countByTid(ticketId);
  	}
+ 	
+ 	/* 상세 페이지 top5 */
+ 	// 좋아요 누른 유저 목록 받아오기
+ 	public List<String> getUserIdListWhoLikedTicket(Integer ticketId) {
+ 		return likeRep.findUserIdByTicketId(ticketId);
+ 	}
+ 	
+ 	// 가장 많이 좋아요한 티켓 5 목록 가져오기
+ 	public List<Integer> getTop5LikedTicketsByUsersWhoLikedTicket(Integer ticketId) {
+ 		// 좋아요 누른 유저 목록 가져오기
+ 		List<String> userIdList = getUserIdListWhoLikedTicket(ticketId);
+ 		
+ 		if(userIdList.isEmpty()) {
+ 			return List.of();
+ 		}
+ 		
+ 		// 티켓의 장르 받아오기
+ 		String genre = ticketRep.findGenreByTicketId(ticketId);
+ 		if(genre.isEmpty()) {
+ 			genre = null;
+ 		}
+ 		
+ 		// 유저 목록이 좋아요한 다른 티켓 top 5
+ 		List<Object[]> result = likeRep.findTop5LikedTicketsByUserIds(userIdList, ticketId, genre);
+ 		
+ 		// 결과에서 티켓 아이디만 추출
+ 		return result.stream()
+ 				.map(row -> (Integer) row[0])
+ 				.collect(Collectors.toList());
+ 	}
+ 	
+ 	// 티켓 목록으로 ticketDB 목록 가져오기
+ 	public List<TicketDB> getTop5LikedTicketsByTicketIdList(Integer ticketId) {
+ 		List<Integer> ticketIdList = getTop5LikedTicketsByUsersWhoLikedTicket(ticketId);
+ 		
+ 		return ticketRep.findByTicketIdList(ticketIdList);
+ 	}
+ 	
 	
 }

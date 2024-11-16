@@ -25,4 +25,13 @@ public interface TicketRepository extends JpaRepository<TicketDB, Integer> {
 	List<TicketDB> findByAddrLimitTop(
 			@Param("keyword") String keyword,
             Pageable pageable);
+	
+	/* 상세 페이지 top5 */
+	// 티켓 목록에 있는 티켓 반환
+	@Query("SELECT t FROM TicketDB t WHERE t.id IN :ticketIdList")
+	List<TicketDB> findByTicketIdList(@Param("ticketIdList") List<Integer> ticketIdList);
+	
+	// 티켓 아이디 받고 장르 반환
+	@Query("SELECT t.genre FROM TicketDB t WHERE t.id = :ticketId")
+	String findGenreByTicketId(@Param("ticketId") Integer ticketId);
 }
