@@ -46,13 +46,13 @@ public class NaverController {
         NaverUserVO.Response userInfo = naverService.processCallback(code, state);
 
         if (userInfo != null) {
-            String frontendUrl = "http://localhost:3000/";
+            String frontendUrl = "https://towave.site";
             session.setAttribute("user", userInfo.getEmail()); // 세션에 사용자 정보를 저장: email만(session이 노출되므로, 나머지 정보는 노출 안되도록(email을 key로 db에 접근해서 받아오면 됨)
             return ResponseEntity.status(HttpStatus.FOUND)
                                  .location(URI.create(frontendUrl))
                                  .build();
         } else {
-            String errorUrl = "http://localhost:3000/login";
+            String errorUrl = "https://towave.site/login";
             return ResponseEntity.status(HttpStatus.FOUND)
                                  .location(URI.create(errorUrl))
                                  .build();
