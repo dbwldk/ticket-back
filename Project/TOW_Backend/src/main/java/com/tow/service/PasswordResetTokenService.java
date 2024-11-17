@@ -42,6 +42,12 @@ public class PasswordResetTokenService {
     	if (!userOptional.isPresent()) {
     	    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
     	}
+    	
+    	// sns 로그인 이용자인지 확인
+    	NaverUserDB user = userOptional.get();
+    	if(userRep.IsNaverLoginFindByEmail(user.getEmail())) {
+    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "SNS login user does not have a password");
+    	}
             
         // 기존 토큰이 있다면 제거
     	pwdResetRep.deleteByEmail(email);
