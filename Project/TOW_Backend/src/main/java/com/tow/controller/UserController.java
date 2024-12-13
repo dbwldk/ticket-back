@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tow.domain.NaverUserDB;
+import com.tow.domain.vo.EmailCheckWithTokenVO;
+import com.tow.domain.vo.OnlyEmailCheckVO;
 import com.tow.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -106,6 +109,32 @@ public class UserController {
     public String getNameWhoLogin(@RequestParam String email) {
     	return userService.getNameWhoLogin(email);
     }
+    
+    /* 이메일 인증 */
+    // 이메일이 db에 있는지 확인
+    @PostMapping("/isEmailExist")
+    public boolean isEmailExist(@RequestBody OnlyEmailCheckVO req) {
+    	return userService.authenticateEmail(req.getEmail());
+    }
+    
+    // 이메일 보내기
+    @PostMapping("/sendVerificationEmail")
+    public ResponseEntity<?> sendVerificationEmail(@RequestBody OnlyEmailCheckVO request) {
+        boolean result = userService.sendVerificationEmail(request.getEmail());
+        if (result) {
+            return ResponseEntity.ok().body(Map.of("success", true));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("success", false));
+        }
+    }
+    
+    // 인증 코드 확인
+    @PostMapping("/verifyCode")
+    public ResponseEntity<?> verifyCode(@RequestBody EmailCheckWithTokenVO request) {
+        boolean isValid = userService.verifyCode(request.getEmail(), request.getCode());
+        return ResponseEntity.ok().body(Map.of("success", isValid));
+    }
+    
     
     
 }
