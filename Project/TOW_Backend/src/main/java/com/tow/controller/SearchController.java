@@ -28,7 +28,7 @@ public class SearchController {
 	@Autowired
 	private SearchService searchService;
 	
-	// 검색 필터 적용해서 Page 검색: not sort
+	// 검색 필터 적용해서 Page 검색
 	@PostMapping("getSearchData")
 	public ResponseEntity<?> searchTickets(@RequestBody SearchReqVO searchReq) {
 		// 필터 데이터 : 리스트
