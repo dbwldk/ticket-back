@@ -53,3 +53,56 @@ CREATE TABLE `naver_user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+#table > email_check
+CREATE TABLE `email_check` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `check_token` varchar(255) NOT NULL,
+  `createAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+#table > ticket_like
+CREATE TABLE `ticket_like` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ticket_id` int NOT NULL,
+  `u_id` varchar(255) NOT NULL,
+  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ticket_id` (`ticket_id`,`u_id`),
+  KEY `fk_tk_like_tk_id_idx` (`ticket_id`),
+  KEY `fk_tk_like_u_id_idx` (`u_id`),
+  CONSTRAINT `fk_tk_like_tk_id` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_tk_like_u_id` FOREIGN KEY (`u_id`) REFERENCES `naver_user` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+#table > ticket_reservation
+CREATE TABLE `ticket_reservation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `ticket_id` int NOT NULL,
+  `ticket_open_date` timestamp NOT NULL,
+  `notification_hours` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `email_sent` tinyint DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`,`ticket_id`),
+  KEY `tk_rv_fk_email_idx` (`email`),
+  KEY `tk_rv_fk_tk_id_idx` (`ticket_id`),
+  CONSTRAINT `tk_rv_fk_email` FOREIGN KEY (`email`) REFERENCES `naver_user` (`email`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tk_rv_fk_tk_id` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1183 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+#table > user_pwd_token
+CREATE TABLE `user_pwd_token` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_UNIQUE` (`email`),
+  UNIQUE KEY `token_UNIQUE` (`token`),
+  CONSTRAINT `user_pwd_tk_email` FOREIGN KEY (`email`) REFERENCES `naver_user` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
